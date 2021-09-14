@@ -1,0 +1,13 @@
+{{define "web"}}
+
+{{ template "header" }}
+
+<main class="px-3">
+    <h1>Result:</h1>
+    <p class="lead">
+        <pre> {{.Output}} </pre>
+    </p>
+</main>
+{{ template "footer" }}
+
+{{end}}
