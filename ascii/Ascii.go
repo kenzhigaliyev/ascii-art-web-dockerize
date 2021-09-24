@@ -15,6 +15,15 @@ var data []string
 var newSplitWord []string
 var text string
 
+func Check(str string) bool {
+	for _, val := range str {
+		if val > 126 || val < 32 {
+			return false
+		}
+	}
+	return true
+}
+
 func Output(str1, str2 string) string {
 	words, font, text, data, newSplitWord = "", "", "", nil, nil
 	words = str1
@@ -24,7 +33,7 @@ func Output(str1, str2 string) string {
 }
 
 func ReadFile() {
-	file, err := os.Open(font + ".txt")
+	file, err := os.Open("fonts/" + font + ".txt")
 	defer file.Close()
 
 	if err != nil {
