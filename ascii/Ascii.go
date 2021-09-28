@@ -17,7 +17,7 @@ var text string
 
 func Check(str string) bool {
 	for _, val := range str {
-		if val > 126 || val < 32 {
+		if (val != 13) && (val > 126 || val < 32) {
 			return false
 		}
 	}
@@ -37,11 +37,9 @@ func ReadFile() {
 	defer file.Close()
 
 	if err != nil {
-
-		log.Println(err.Error())
 		return
 	}
-	newSplitWord = strings.Split(words, "\\n")
+	newSplitWord = strings.Split(words, "\r")
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {

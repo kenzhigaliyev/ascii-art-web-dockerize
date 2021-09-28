@@ -15,6 +15,7 @@ type ASCII struct {
 
 var Result ASCII
 
+//GET method part
 func Index(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" && r.Method == "GET" {
 		http.Error(w, "400 Not Found", http.StatusNotFound)
@@ -35,9 +36,10 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	val.ExecuteTemplate(w, "index", nil)
 }
 
+//POST method part
 func Body(w http.ResponseWriter, r *http.Request) {
 
-	if r.URL.Path != "/ascii-art/" && r.Method == "POST" {
+	if r.URL.Path != "/ascii-art/" || (r.URL.Path != "/ascii-art/" && r.Method == "POST") {
 		http.Error(w, "404 Not Found", http.StatusNotFound)
 		return
 	}
@@ -58,12 +60,17 @@ func Body(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	Res := strings.ReplaceAll(r.FormValue("str"), "\r", "")
-	Result.Str = (strings.ReplaceAll(Res, "\n", "\\n"))
+	Result.Str = strings.ReplaceAll(r.FormValue("str"), "\n", "")
 	if !student.Check(Result.Str) {
 		http.Error(w, "400 Bad Request", http.StatusBadRequest)
 		return
 	}
+
+	if r.FormValue("submit_btn") != "Submit" {
+		http.Error(w, "400 Bad Request", http.StatusBadRequest)
+		return
+	}
+
 	Result.Font = r.FormValue("font")
 
 	if r.FormValue("font") == "" {
@@ -72,6 +79,10 @@ func Body(w http.ResponseWriter, r *http.Request) {
 	}
 	if Result.Font == "thinkertoy" || Result.Font == "standard" || Result.Font == "shadow" {
 		Result.Output = student.Output(Result.Str, Result.Font)
+		if Result.Output == "" {
+			http.Error(w, "500 Internal Server Error", http.StatusInternalServerError)
+			return
+		}
 		val.ExecuteTemplate(w, "web", Result)
 	} else {
 		http.Error(w, "400 Bad Request", http.StatusBadRequest)
@@ -79,6 +90,7 @@ func Body(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//main function
 func MainFunc() {
 	http.HandleFunc("/", Index)
 	http.HandleFunc("/ascii-art/", Body)

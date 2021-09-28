@@ -1,4 +1,4 @@
-FROM golang:1.16.3
+FROM golang:1.16.7-alpine3.14
 
 LABEL project="ASCII-ART-WEB-DOCKERIZE" \ 
 authors="Adil and Zangar" \
@@ -13,6 +13,9 @@ COPY ascii ascii/
 
 RUN mkdir templates
 COPY templates templates/
+
+RUN mkdir web
+COPY web web/
 
 RUN mkdir fonts
 COPY fonts fonts/
